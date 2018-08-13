@@ -68,7 +68,7 @@ def check_bgw_metrics(aggregator, expected_tags):
 @mock.patch("datadog_checks.postgres.postgres.add_instance_tags_to_server_metrics", return_value=True)
 @pytest.mark.integration
 def test_common_metrics_with_agent5(instance_tag, aggregator, postgres_standalone, pg_instance):
-    posgres_check = PostgreSql('postgres', {}, {})
+    posgres_check = PostgreSql('postgres', {}, {}, [pg_instance])
     expected_tags = pg_instance['tags'] + ['db:%s' % pg_instance['dbname']]
 
     posgres_check.check(pg_instance)
@@ -80,7 +80,7 @@ def test_common_metrics_with_agent5(instance_tag, aggregator, postgres_standalon
 @mock.patch("datadog_checks.postgres.postgres.add_instance_tags_to_server_metrics", return_value=False)
 @pytest.mark.integration
 def test_common_metrics_with_agent6(instance_tag, aggregator, postgres_standalone, pg_instance):
-    posgres_check = PostgreSql('postgres', {}, {})
+    posgres_check = PostgreSql('postgres', {}, {}, [pg_instance])
     expected_tags = ['db:%s' % pg_instance['dbname']]
 
     posgres_check.check(pg_instance)
@@ -90,7 +90,7 @@ def test_common_metrics_with_agent6(instance_tag, aggregator, postgres_standalon
 
 @pytest.mark.integration
 def test_common_metrics_without_size(aggregator, postgres_standalone, pg_instance):
-    posgres_check = PostgreSql('postgres', {}, {})
+    posgres_check = PostgreSql('postgres', {}, {}, [pg_instance])
     pg_instance['collect_database_size_metrics'] = False
 
     posgres_check.check(pg_instance)
@@ -100,7 +100,7 @@ def test_common_metrics_without_size(aggregator, postgres_standalone, pg_instanc
 @pytest.mark.integration
 def test_can_connect_service_check(aggregator, postgres_standalone, pg_instance):
     return
-    posgres_check = PostgreSql('postgres', {}, {})
+    posgres_check = PostgreSql('postgres', {}, {}, [pg_instance])
     posgres_check.check(pg_instance)
 
     aggregator.assert_service_check('postgres.can_connect',
@@ -110,7 +110,7 @@ def test_can_connect_service_check(aggregator, postgres_standalone, pg_instance)
 
 @pytest.mark.integration
 def test_schema_metrics(aggregator, postgres_standalone, pg_instance):
-    posgres_check = PostgreSql('postgres', {}, {})
+    posgres_check = PostgreSql('postgres', {}, {}, [pg_instance])
     posgres_check.check(pg_instance)
 
     aggregator.assert_metric('postgresql.table.count', value=1, count=1,
@@ -120,7 +120,7 @@ def test_schema_metrics(aggregator, postgres_standalone, pg_instance):
 
 @pytest.mark.integration
 def test_connections_metrics(aggregator, postgres_standalone, pg_instance):
-    posgres_check = PostgreSql('postgres', {}, {})
+    posgres_check = PostgreSql('postgres', {}, {}, [pg_instance])
     posgres_check.check(pg_instance)
 
     for name in CONNECTION_METRICS:

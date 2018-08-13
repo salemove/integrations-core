@@ -13,8 +13,8 @@ KEY = ('localhost', '5432', 'dbname')
 
 
 @pytest.fixture
-def check():
-    check = PostgreSql('postgres', {}, {})
+def check(pg_instance):
+    check = PostgreSql('postgres', {}, {}, [pg_instance])
     check._is_9_2_or_above = mock.MagicMock()
     return check
 
